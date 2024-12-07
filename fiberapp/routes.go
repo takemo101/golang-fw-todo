@@ -22,6 +22,8 @@ func setupRoutes(router *fiber.App) {
 	{
 		// クエリパラメーターによる認証
 		v1.Use(func(ctx fiber.Ctx) error {
+			// Fiberのv3ではContextがインタフェースで提供されている
+
 			token := fiber.Query[string](ctx, "token")
 
 			// トークンが一致しない場合は 401 を返す

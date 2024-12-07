@@ -21,7 +21,7 @@ func setupRoutes(router *echo.Echo) {
 	{
 		// クエリパラメーターによる認証
 		v1.Use(func(next echo.HandlerFunc) echo.HandlerFunc {
-			// 他のフレームワークと違い、Contextがインタフェースで提供されている
+			// EchoではContextがインタフェースで提供されている
 			return func(ctx echo.Context) error {
 
 				token := ctx.QueryParam("token")

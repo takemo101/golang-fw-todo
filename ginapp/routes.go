@@ -22,6 +22,7 @@ func setupRoutes(router *gin.Engine) {
 	{
 		// クエリパラメーターによる認証
 		v1.Use(func(ctx *gin.Context) {
+
 			token := ctx.Query("token")
 
 			// トークンが一致しない場合は 401 を返す
