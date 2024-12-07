@@ -3,6 +3,7 @@ package chiapp
 import (
 	"app/repository"
 	"app/shared"
+	"fmt"
 	"log"
 	"net/http"
 
@@ -126,5 +127,6 @@ func NewChiServer() shared.Server {
 
 // サーバーを起動
 func (s *ChiServer) Run(addr string) {
+	fmt.Printf("Server running on %s\n", addr)
 	log.Fatal(http.ListenAndServe(addr, s.mux))
 }
