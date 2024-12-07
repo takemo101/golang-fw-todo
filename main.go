@@ -33,10 +33,11 @@ func main() {
 	// コマンド引数からサーバータイプを取得
 	// go run main.go -server fiber
 	t := flag.String("server", "gin", "server type")
+	host := flag.String("host", "localhost:8080", "host")
 	flag.Parse()
 
 	if server, ok := newServer(*t); ok {
-		server.Run(":8080")
+		server.Run(*host)
 	} else {
 		log.Fatal("invalid server type")
 	}
