@@ -20,7 +20,7 @@ func setupRoutes(router *fiber.App) {
 	v1 := router.Group("/api/v1").Name("api.")
 	{
 		// クエリパラメーターによる認証
-		v1.Use(TokenAuth)
+		v1.Use(tokenAuth)
 
 		// todo ルートのグループ
 		todo := v1.Group("/todos").Name("todos.")
@@ -35,7 +35,7 @@ func setupRoutes(router *fiber.App) {
 	}
 }
 
-func TokenAuth(ctx fiber.Ctx) error {
+func tokenAuth(ctx fiber.Ctx) error {
 	// Fiberのv3ではContextがインタフェースで提供されている
 
 	token := fiber.Query[string](ctx, "token")

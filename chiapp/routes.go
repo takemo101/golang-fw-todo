@@ -36,7 +36,7 @@ func setupRoutes(router *chi.Mux) {
 	router.Route("/api/v1", func(r chi.Router) {
 
 		// クエリパラメーターによる認証
-		r.Use(TokenAuth)
+		r.Use(tokenAuth)
 
 		// todo ルートのグループ
 		r.Route("/todos", func(todo chi.Router) {
@@ -50,7 +50,7 @@ func setupRoutes(router *chi.Mux) {
 	})
 }
 
-func TokenAuth(next http.Handler) http.Handler {
+func tokenAuth(next http.Handler) http.Handler {
 	// Contextがインタフェースで提供されている
 	return http.HandlerFunc(
 		func(w http.ResponseWriter, r *http.Request) {

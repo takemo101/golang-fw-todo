@@ -19,7 +19,7 @@ func setupRoutes(router *echo.Echo) {
 	v1 := router.Group("/api/v1")
 	{
 		// クエリパラメーターによる認証
-		v1.Use(TokenAuth)
+		v1.Use(tokenAuth)
 
 		// todo ルートのグループ
 		todo := v1.Group("/todos")
@@ -34,7 +34,7 @@ func setupRoutes(router *echo.Echo) {
 	}
 }
 
-func TokenAuth(next echo.HandlerFunc) echo.HandlerFunc {
+func tokenAuth(next echo.HandlerFunc) echo.HandlerFunc {
 	// EchoではContextがインタフェースで提供されている
 	return func(ctx echo.Context) error {
 

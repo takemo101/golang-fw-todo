@@ -20,7 +20,7 @@ func setupRoutes(router *gin.Engine) {
 	v1 := router.Group("/api/v1")
 	{
 		// クエリパラメーターによる認証
-		v1.Use(TokenAuth)
+		v1.Use(tokenAuth)
 
 		// todo ルートのグループ
 		todo := v1.Group("/todos")
@@ -35,7 +35,7 @@ func setupRoutes(router *gin.Engine) {
 	}
 }
 
-func TokenAuth(ctx *gin.Context) {
+func tokenAuth(ctx *gin.Context) {
 	token := ctx.Query("token")
 
 	// トークンが一致しない場合は 401 を返す
