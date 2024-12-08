@@ -16,73 +16,76 @@ type GinServer struct {
 
 // サーバーのセットアップ
 func setupRoutes(router *gin.Engine) {
-
 	// api ルートのグループ
 	v1 := router.Group("/api/v1")
 	{
 		// クエリパラメーターによる認証
-		v1.Use(func(ctx *gin.Context) {
-
-			token := ctx.Query("token")
-
-			// トークンが一致しない場合は 401 を返す
-			if shared.IsInvalidToken(token) {
-				ctx.JSON(http.StatusUnauthorized, gin.H{
-					"message": "Unauthorized",
-				})
-
-				ctx.Abort()
-			}
-
-			ctx.Next()
-		})
+		v1.Use(TokenAuth)
 
 		// todo ルートのグループ
 		todo := v1.Group("/todos")
 		{
 			// 一覧取得
-			todo.GET("", func(ctx *gin.Context) {
-
-				todos := repository.GetTodos()
-
-				ctx.JSON(http.StatusOK, gin.H{
-					"todos": todos,
-				})
-			})
-
+			todo.GET("", getTodos)
 			// 詳細取得
-			todo.GET("/:id", func(ctx *gin.Context) {
-				// パスパラメーターから id を取得
-				id := ctx.Param("id")
-
-				todo, ok := repository.GetTodoById(id)
-
-				if !ok {
-					ctx.JSON(http.StatusNotFound, gin.H{
-						"message": "Not Found",
-					})
-				}
-
-				ctx.JSON(http.StatusOK, gin.H{
-					"todo": todo,
-				})
-			})
-
+			todo.GET("/:id", getTodoById)
 			// 作成
-			todo.POST("", func(ctx *gin.Context) {
-				todo := &repository.TodoForCreate{}
-
-				// リクエストボディをパース
-				ctx.BindJSON(todo)
-
-				created := repository.CreateTodo(*todo)
-
-				ctx.JSON(http.StatusCreated, gin.H{
-					"todo": created,
-				})
-			})
+			todo.POST("", createTodo)
 		}
 	}
+}
+
+func TokenAuth(ctx *gin.Context) {
+	token := ctx.Query("token")
+
+	// トークンが一致しない場合は 401 を返す
+	if shared.IsInvalidToken(token) {
+		ctx.JSON(http.StatusUnauthorized, gin.H{
+			"message": "Unauthorized",
+		})
+
+		ctx.Abort()
+	}
+
+	ctx.Next()
+}
+
+func getTodos(ctx *gin.Context) {
+	todos := repository.GetTodos()
+
+	ctx.JSON(http.StatusOK, gin.H{
+		"todos": todos,
+	})
+}
+
+func getTodoById(ctx *gin.Context) {
+	// パスパラメーターから id を取得
+	id := ctx.Param("id")
+
+	todo, ok := repository.GetTodoById(id)
+
+	if !ok {
+		ctx.JSON(http.StatusNotFound, gin.H{
+			"message": "Not Found",
+		})
+	}
+
+	ctx.JSON(http.StatusOK, gin.H{
+		"todo": todo,
+	})
+}
+
+func createTodo(ctx *gin.Context) {
+	todo := &repository.TodoForCreate{}
+
+	// リクエストボディをパース
+	ctx.BindJSON(todo)
+
+	created := repository.CreateTodo(*todo)
+
+	ctx.JSON(http.StatusCreated, gin.H{
+		"todo": created,
+	})
 }
 
 // サーバーのインスタンスを生成
